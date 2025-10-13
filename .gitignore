@@ -1,0 +1,6 @@
+# OS/Editor
+.DS_Store
+.vscode/
+
+# Node (if added later)
+node_modules/
