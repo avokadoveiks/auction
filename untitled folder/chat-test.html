@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Test</title>
+    <style>
+        .chat-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 300px;
+            background: rgba(30, 30, 30, 0.95);
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .chat-panel.open {
+            transform: translateY(0);
+        }
+        
+        body {
+            margin: 0;
+            height: 100vh;
+            background: #333;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        
+        .test-container {
+            padding: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Chat Panel Test</h1>
+        <button onclick="toggleChat()">Toggle Chat</button>
+        <button onclick="checkChatState()">Check Chat State</button>
+        <div id="status"></div>
+    </div>
+    
+    <div class="chat-panel" id="chatPanel">
+        <div style="padding: 20px;">
+            <h3>Test Chat Panel</h3>
+            <p>This should be hidden by default</p>
+            <button onclick="toggleChat()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleChat() {
+            const chatPanel = document.getElementById('chatPanel');
+            chatPanel.classList.toggle('open');
+            checkChatState();
+        }
+        
+        function checkChatState() {
+            const chatPanel = document.getElementById('chatPanel');
+            const status = document.getElementById('status');
+            const hasOpen = chatPanel.classList.contains('open');
+            const transform = window.getComputedStyle(chatPanel).transform;
+            
+            status.innerHTML = `
+                <p>Has 'open' class: ${hasOpen}</p>
+                <p>Transform: ${transform}</p>
+                <p>Should be: ${hasOpen ? 'visible' : 'hidden'}</p>
+            `;
+        }
+        
+        // Check initial state
+        window.onload = function() {
+            checkChatState();
+        }
+    </script>
+</body>
+</html>

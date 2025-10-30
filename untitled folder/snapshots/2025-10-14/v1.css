@@ -1,0 +1,23 @@
+/* Snapshot 2025-10-14 - working flex layout for bars and columns with 6px vertical padding */
+:root {
+	--bg: #0f1320;
+	--bg2: #1b2141;
+	--primary: #3d7eff;
+	--primary-2: #6aa5ff;
+	--success-2: #28b463;
+	--text: #e6ebff;
+	--muted: #9aa7c7;
+	--card-border: rgba(255,255,255,0.12);
+	--shadow: 0 8px 24px rgba(0,0,0,0.25);
+	--buttons-height: 60px;
+	--avatar-overlap: 10px;
+	--top-bar-h: 40px;
+	--bottom-bar-h: 40px;
+}
+
+body { height: 100dvh; display: flex; flex-direction: column; margin: 0; background: radial-gradient(1200px 600px at 50% 0%, #151a2f 0%, var(--bg) 60%) fixed; overflow: hidden; }
+.top-bar { height: var(--top-bar-h); flex: 0 0 var(--top-bar-h); margin: 10px 10px 0 10px; border-radius: 10px; border-bottom: 1px solid var(--card-border); box-shadow: var(--shadow); padding: 0 10px; display: flex; align-items: center; justify-content: space-between; color: var(--text); background: linear-gradient(135deg, rgba(61,126,255,0.35), rgba(106,165,255,0.25)); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.bottom-bar { height: var(--bottom-bar-h); flex: 0 0 var(--bottom-bar-h); margin: 0 10px 10px 10px; border-radius: 10px; border-top: 1px solid var(--card-border); box-shadow: var(--shadow); padding: 0 10px; display: flex; align-items: center; justify-content: space-between; color: var(--text); background: linear-gradient(135deg, rgba(61,126,255,0.35), rgba(106,165,255,0.25)); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.game-container { flex: 1; display: flex; width: 100%; align-items: stretch; justify-content: center; overflow: hidden; }
+.columns-container { display: flex; gap: 10px; width: 100%; height: 100%; padding: 6px 10px !important; box-sizing: border-box; overflow: hidden; align-items: stretch; }
+.column { flex: 1; border: 2px solid #ccc; border-radius: 10px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 10px; color: var(--text); overflow: hidden; box-shadow: var(--shadow); min-height: 0; }

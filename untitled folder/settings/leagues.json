@@ -1,0 +1,10 @@
+{
+  "thresholds": {
+    "Bronze": 0,
+    "Silver": 10000,
+    "Gold": 30000,
+    "Diamond": 100000
+  },
+  "columns": ["Шанс", "Любитель", "Профессионал", "Дуэль", "Мастер"],
+  "leagueOrder": ["Bronze", "Silver", "Gold", "Diamond"]
+}

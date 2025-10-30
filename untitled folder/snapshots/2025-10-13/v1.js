@@ -1,0 +1,3 @@
+// Snapshot of v1.js taken on 2025-10-13
+// See root v1.js for current logic; this snapshot may be used to restore the baseline.
+// ...existing code...

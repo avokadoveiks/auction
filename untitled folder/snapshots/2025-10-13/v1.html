@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
+	<title>Аукцион Игра - iPhone 15</title>
+	<link rel="stylesheet" href="v1.css">
+@</head>
+<body>
+	<div class="top-bar">
+		<div class="top-info">
+			<div id="currentAvatar" class="current-avatar">👤</div>
+			<div id="currentName" class="current-name">Игрок1</div>
+			<div id="currentBalance" class="current-balance">💰 500 акций</div>
+		</div>
+		<div class="top-right">
+			<button onclick="nextAccount()">Следующий игрок</button>
+			<select id="accountSelector" onchange="switchAccount(this.value)">
+				<option value="0">Игрок1</option>
+				<option value="1">Игрок2</option>
+				<option value="2">Игрок3</option>
+			</select>
+			<button class="top-button" onclick="toggleWinners()">Победы</button>
+			<button class="top-button">Настройки</button>
+		</div>
+	</div>
+	<div class="game-container">
+		<div class="columns-container">
+			<div class="column" data-column="1">
+				<div class="column-label">Шанс</div>
+				<div class="timer-notify" id="timer-notify" style="display:none;">⚠️ Таймер непредсказуем — может закончиться в любую секунду!</div>
+				<div style="flex: 0.3;"></div>
+				<div class="column-bank" id="bank-1">Банк: 3</div>
+				<div class="bet-info" id="bet-info-1" style="display: none;">
+					<img class="bet-avatar" id="bet-avatar-1" src="" alt="Avatar">
+					<div class="bet-name" id="bet-name-1"></div>
+				</div>
+				<div style="flex: 1;"></div>
+				<div class="column-timer" id="timer-1">20</div>
+				<!-- Знак запрета автоставки для колонки 1 -->
+				<div class="column-badges">
+					<div class="no-auto-badge" title="В этой колонке нельзя делать автоставку" aria-label="В этой колонке нельзя делать автоставку">
+						<span class="no-auto-text">AUTO</span>
+					</div>
+					<span class="timer-badge-icon">⏳</span>
+				</div>
+				<div class="no-auto-notify" id="no-auto-notify" style="display:none;">⚠️ Автоставки делать нельзя!</div>
+				<div class="bet-controls">
+					<button class="bet-button" onclick="makeBet(1, 2)">Ставка 2</button>
+					<button class="auto-button" id="auto-1" onclick="toggleAuto(1)" disabled>Автоставка (недоступно)</button>
+				</div>
+				<div class="bonus-bar" id="bonus-1" style="display: none;">Бонус 1%</div>
+			</div>
+			<div class="column" data-column="2">
+				<div class="column-label">Любитель</div>
+				<div style="flex: 0.3;"></div>
+				<div class="column-bank" id="bank-2">Банк: 6</div>
+				<div class="bet-info" id="bet-info-2" style="display: none;">
+					<img class="bet-avatar" id="bet-avatar-2" src="" alt="Avatar">
+					<div class="bet-name" id="bet-name-2"></div>
+				</div>
+				<div style="flex: 1;"></div>
+				<div class="column-timer" id="timer-2">20</div>
+				<div class="bet-controls">
+					<button class="bet-button" onclick="makeBet(2, 4)">Ставка 4</button>
+					<button class="auto-button" id="auto-2" onclick="toggleAuto(2)">Автоставка (выкл)</button>
+				</div>
+				<div class="bonus-bar" id="bonus-2" style="display: none;">Бонус 1%</div>
+			</div>
+			<div class="column" data-column="3">
+				<div class="column-label">Профессионал</div>
+				<div style="flex: 0.3;"></div>
+				<div class="column-bank" id="bank-3">Банк: 9</div>
+				<div class="bet-info" id="bet-info-3" style="display: none;">
+					<img class="bet-avatar" id="bet-avatar-3" src="" alt="Avatar">
+					<div class="bet-name" id="bet-name-3"></div>
+				</div>
+				<div style="flex: 1;"></div>
+				<div class="column-timer" id="timer-3">20</div>
+				<div class="bet-controls">
+					<button class="bet-button" onclick="makeBet(3, 6)">Ставка 6</button>
+					<button class="auto-button" id="auto-3" onclick="toggleAuto(3)">Автоставка (выкл)</button>
+				</div>
+				<div class="bonus-bar" id="bonus-3" style="display: none;">Бонус 1%</div>
+			</div>
+			<div class="column" data-column="4">
+				<div class="column-label">Дуэль</div>
+				<div style="flex: 0.3;"></div>
+				<div class="column-bank" id="bank-4">Банк: 12</div>
+				<div class="bet-info" id="bet-info-4" style="display: none;">
+					<img class="bet-avatar" id="bet-avatar-4" src="" alt="Avatar">
+					<div class="bet-name" id="bet-name-4"></div>
+				</div>
+				<div style="flex: 1;"></div>
+				<div class="column-timer" id="timer-4">20</div>
+				<div class="column-badges">
+					<div class="duel-badge" id="duel-badge" title="Дуэль" aria-label="Дуэль">⚔️</div>
+					<div class="duel-notify" id="duel-notify" style="display:none;">👥 Только 2 игрока</div>
+				</div>
+				<div class="bet-controls">
+					<button class="bet-button" onclick="makeBet(4, 8)">Ставка 8</button>
+					<button class="auto-button" id="auto-4" onclick="toggleAuto(4)">Автоставка (выкл)</button>
+				</div>
+				<div class="bonus-bar" id="bonus-4" style="display: none;">Бонус 1%</div>
+			</div>
+			<div class="column" data-column="5">
+				<div class="column-label">Мастер</div>
+				<div style="flex: 0.3;"></div>
+				<div class="column-bank" id="bank-5">Банк: 15</div>
+				<div class="bet-info" id="bet-info-5" style="display: none;">
+					<img class="bet-avatar" id="bet-avatar-5" src="" alt="Avatar">
+					<div class="bet-name" id="bet-name-5"></div>
+				</div>
+				<div style="flex: 1;"></div>
+				<div class="column-timer" id="timer-5">20</div>
+				<div class="bet-controls">
+					<button class="bet-button" onclick="makeBet(5, 10)">Ставка 10</button>
+					<button class="auto-button" id="auto-5" onclick="toggleAuto(5)">Автоставка (выкл)</button>
+				</div>
+				<div class="bonus-bar" id="bonus-5" style="display: none;">Бонус 1%</div>
+			</div>
+		</div>
+	</div>
+	<div class="bottom-bar">
+		<button class="top-button">Меню</button>
+		<div class="bottom-spacer"></div>
+		<button class="chat-button" onclick="toggleChat()">💬</button>
+	</div>
+	<div class="chat-panel" id="chatPanel">
+		<div class="chat-header">
+			<h3>Чат игроков</h3>
+			<button onclick="toggleChat()">Закрыть</button>
+		</div>
+		<div class="chat-messages" id="chatMessages"></div>
+		<div class="chat-input">
+			<input type="text" id="chatInput" placeholder="Сообщение...">
+			<button onclick="sendMessage()">Отправить</button>
+		</div>
+	</div>
+	<!-- Модалка истории побед -->
+	<div class="winners-panel" id="winnersPanel">
+		<div class="winners-header">
+			<h3>История побед</h3>
+			<button onclick="toggleWinners()">Закрыть</button>
+		</div>
+		<div class="winners-list" id="winnersList"></div>
+	</div>
+	<script src="v1.js"></script>
+</body>
+</html>

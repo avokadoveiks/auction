@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
+	<title>Аукцион Игра - iPhone 15</title>
+	<link rel="stylesheet" href="../../v1.css?v=2025-10-14-6">
+</head>
+<body>
+	<div class="top-bar">
+		<div class="top-info">
+			<div id="currentAvatar" class="current-avatar">👤</div>
+			<div id="currentName" class="current-name">Игрок1</div>
+			<div id="currentBalance" class="current-balance">💰 500 акций</div>
+		</div>
+		<div class="top-right">
+			<button class="top-button" onclick="nextAccount()">next</button>
+			<button class="top-button" onclick="toggleWinners()">Победы</button>
+			<button class="top-button">Настройки</button>
+		</div>
+	</div>
+	<div class="game-container">
+		<div class="columns-container">
+			<div class="column" data-column="1">
+				<div class="column-label">Шанс</div>
+				<div class="timer-notify" id="timer-notify" style="display:none;">⚠️ Таймер непредсказуем — может закончиться в любую секунду!</div>
+				<div style="flex: 0.3;"></div>
+				<div class="column-bank" id="bank-1">Банк: 3</div>
+				<div class="bet-info" id="bet-info-1" style="display: none;">
+					<img class="bet-avatar" id="bet-avatar-1" src="" alt="Avatar">
+					<div class="bet-name" id="bet-name-1"></div>
+				</div>
+				<div style="flex: 1;"></div>
+				<div class="column-timer" id="timer-1">20</div>
+				<!-- Знак запрета автоставки для колонки 1 -->
+				<div class="column-badges">
+					<div class="no-auto-badge" title="В этой колонке нельзя делать автоставку" aria-label="В этой колонке нельзя делать автоставку">
+						<span class="no-auto-text">AUTO</span>
+					</div>
+					<span class="timer-badge-icon">⏳</span>
+				</div>
+				<div class="no-auto-notify" id="no-auto-notify" style="display:none;">⚠️ Автоставки делать нельзя!</div>
+				<div class="bet-controls">
+					<button class="bet-button" onclick="makeBet(1, 2)">Ставка 2</button>
+					<button class="auto-button" id="auto-1" onclick="toggleAuto(1)" disabled>Автоставка</button>
+				</div>
+				<div class="bonus-bar" id="bonus-1" style="display: none;">Бонус 1%</div>
+			</div>
+			<!-- Остальные колонки опущены для краткости в снапшоте -->
+		</div>
+	</div>
+	<div class="bottom-bar">
+		<button class="top-button">Меню</button>
+		<div class="bottom-spacer"></div>
+		<button class="chat-button" onclick="toggleChat()">💬</button>
+	</div>
+	<div class="chat-panel" id="chatPanel">
+		<div class="chat-header">
+			<h3>Чат игроков</h3>
+			<button onclick="toggleChat()">Закрыть</button>
+		</div>
+		<div class="chat-messages" id="chatMessages"></div>
+		<div class="chat-input">
+			<input type="text" id="chatInput" placeholder="Сообщение...">
+			<button onclick="sendMessage()">Отправить</button>
+		</div>
+	</div>
+	<div class="winners-panel" id="winnersPanel">
+		<div class="winners-header">
+			<h3>История побед</h3>
+			<button onclick="toggleWinners()">Закрыть</button>
+		</div>
+		<div class="winners-list" id="winnersList"></div>
+	</div>
+	<script src="../../v1.js?v=2025-10-14-2"></script>
+</body>
+</html>
