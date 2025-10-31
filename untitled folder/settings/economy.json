@@ -1,0 +1,14 @@
+{
+  "stakes": {
+    "Bronze": [2, 4, 6],
+    "Silver": [10, 20, 30],
+    "Gold": [50, 100, 150],
+    "Diamond": [200, 400, 600]
+  },
+  "maxPayout": {
+    "Bronze": 1000,
+    "Silver": 5000,
+    "Gold": 20000,
+    "Diamond": 0
+  }
+}

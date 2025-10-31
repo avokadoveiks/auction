@@ -1,0 +1,11 @@
+{
+  "roomCapacity": 15,
+  "alwaysOn": true,
+  "startImmediately": true,
+  "botFill": {
+    "enabled": true,
+    "minHumans": 3,
+    "maxBots": 10
+  },
+  "countdownSec": 0
+}

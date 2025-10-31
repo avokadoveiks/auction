@@ -1,0 +1,364 @@
+/* Real Estate modal UI — minimalist with property-themed accents */
+:root{
+  --realestate-bg: linear-gradient(180deg, rgba(18,22,38,.92), rgba(18,22,38,.92));
+  --realestate-border: rgba(255,255,255,.08);
+  --realestate-text: #eef3ff;
+  --realestate-muted: #a8b5d5;
+  --realestate-green: #5eead4;
+  --realestate-blue: #60a5fa;
+  --realestate-gold: #f5d06f;
+}
+
+.realestate-overlay{ 
+  position:fixed; 
+  inset:0; 
+  background: rgba(6,10,22,.65); 
+  backdrop-filter: blur(4px); 
+  display:none; 
+  align-items:center; 
+  justify-content:center; 
+  z-index: 1000;
+  /* Safe-area aware padding in landscape to avoid notch/edges */
+  padding-left: max(12px, env(safe-area-inset-left, 0px), var(--safe-left, 0px));
+  padding-right: max(12px, env(safe-area-inset-right, 0px), var(--safe-right, 0px));
+  padding-top: max(12px, env(safe-area-inset-top, 0px), var(--safe-top, 0px));
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 0px), var(--safe-bottom, 0px));
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.realestate-overlay.open{ 
+  display:flex;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.realestate-modal{ 
+  width:min(860px, calc(100% - 24px)); 
+  max-height:min(86vh, 680px); 
+  overflow:hidden; 
+  border-radius:14px; 
+  background: var(--realestate-bg); 
+  border:1px solid var(--realestate-border); 
+  box-shadow: 0 18px 48px rgba(0,0,0,.45); 
+  color: var(--realestate-text); 
+  display:flex; 
+  flex-direction:column;
+  transform: scale(0.95);
+  animation: scaleIn 0.3s ease forwards;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0.8; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.realestate-modal .realestate-header{ 
+  display:flex; 
+  align-items:center; 
+  gap:10px; 
+  padding:12px 14px; 
+  border-bottom:1px solid var(--realestate-border);
+  background: rgba(96,165,250,.05);
+}
+
+.realestate-modal .realestate-title{ 
+  font-weight:800; 
+  letter-spacing:.3px;
+  font-size: 16px;
+}
+
+.realestate-modal .realestate-spacer{ flex:1 1 auto }
+
+.realestate-modal .realestate-close{ 
+  appearance:none; 
+  border:1px solid var(--realestate-border); 
+  background:transparent; 
+  color:var(--realestate-text); 
+  padding:8px 12px; 
+  border-radius:10px; 
+  cursor:pointer;
+  transition: all 0.2s ease;
+}
+
+.realestate-modal .realestate-close:hover {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.15);
+}
+
+.realestate-modal .realestate-body{ 
+  padding:14px; 
+  overflow:auto; 
+  display:flex; 
+  flex-direction:column;
+  gap:14px;
+  flex: 1 1 auto;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Locked state */
+.realestate-locked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  gap: 12px;
+}
+
+.locked-icon {
+  font-size: 64px;
+  opacity: 0.4;
+}
+
+.locked-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--realestate-text);
+}
+
+.locked-text {
+  font-size: 14px;
+  color: var(--realestate-muted);
+}
+
+.locked-progress {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--realestate-green);
+  background: rgba(94,234,212,.1);
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(94,234,212,.2);
+}
+
+/* Collect all button */
+.realestate-collect-all {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.realestate-btn-collect {
+  background: linear-gradient(135deg, var(--realestate-green), #34d399) !important;
+  color: #0f172a !important;
+  font-size: 15px !important;
+  padding: 12px 24px !important;
+  box-shadow: 0 6px 18px rgba(94,234,212,.3) !important;
+}
+
+/* Property list */
+.realestate-list{ 
+  display:grid; 
+  gap:12px;
+}
+
+.realestate-card{ 
+  position: relative;
+  background: rgba(255,255,255,.03); 
+  border:1px solid var(--realestate-border); 
+  border-radius:12px; 
+  padding:14px; 
+  display:grid;
+  grid-template-columns: auto 1fr auto;
+  gap:14px;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.realestate-card:hover {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(96,165,250,.2);
+}
+
+.property-icon {
+  font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: rgba(96,165,250,.1);
+  border-radius: 12px;
+  border: 1px solid rgba(96,165,250,.2);
+}
+
+.property-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.property-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--realestate-text);
+}
+
+.property-cost {
+  font-size: 13px;
+  color: var(--realestate-gold);
+  font-weight: 600;
+}
+
+.property-income {
+  font-size: 13px;
+  color: var(--realestate-green);
+}
+
+.property-owned {
+  font-size: 12px;
+  color: var(--realestate-blue);
+  font-weight: 600;
+}
+
+.property-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+  min-width: 180px;
+}
+
+.property-timer {
+  font-size: 12px;
+  color: var(--realestate-muted);
+  font-weight: 600;
+  background: rgba(255,255,255,.05);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--realestate-border);
+}
+
+.realestate-btn{ 
+  appearance:none; 
+  border:0; 
+  background: linear-gradient(180deg,#60a5fa,#3b82f6); 
+  color:#fff; 
+  font-weight:700; 
+  padding:10px 14px; 
+  border-radius:10px; 
+  cursor:pointer; 
+  box-shadow: 0 6px 18px rgba(59,130,246,.25);
+  transition: all 0.2s ease;
+  font-size: 13px;
+  width: 100%;
+}
+
+.realestate-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59,130,246,.35);
+}
+
+.realestate-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.realestate-btn-small {
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+}
+
+.realestate-btn-disabled {
+  background: rgba(255,255,255,.1) !important;
+  color: var(--realestate-muted) !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+
+.realestate-banner{ 
+  padding:10px 12px; 
+  border-radius:10px; 
+  background: rgba(255,255,255,.04); 
+  border:1px solid var(--realestate-border); 
+  color: var(--realestate-text);
+  text-align: center;
+}
+
+/* Notification */
+.realestate-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(59,130,246,.4);
+  font-weight: 600;
+  z-index: 10001;
+  opacity: 0;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.realestate-notification.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.realestate-notification.success {
+  background: linear-gradient(135deg, #5eead4, #34d399);
+  box-shadow: 0 8px 24px rgba(94,234,212,.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 720px){
+  .realestate-card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .property-icon {
+    width: 100%;
+    height: 64px;
+  }
+  
+  .property-actions {
+    width: 100%;
+    align-items: stretch;
+  }
+  
+  .property-timer {
+    text-align: center;
+  }
+}
+
+/* Compact modal for short landscape heights (iPhone landscape) */
+@media (max-height: 540px) and (orientation: landscape) {
+  .realestate-modal { max-height: min(80vh, 560px); }
+  .realestate-modal .realestate-header { padding: 10px 12px; }
+  .realestate-modal .realestate-body { padding: 10px; gap: 10px; }
+  .realestate-card { padding: 10px; gap: 10px; }
+  .property-icon { width: 48px; height: 48px; font-size: 36px; }
+  .property-name { font-size: 14px; }
+  .property-cost, .property-income { font-size: 12px; }
+  .property-owned, .property-timer { font-size: 11px; }
+  .realestate-btn { padding: 8px 12px; font-size: 12px; }
+  .realestate-btn-small { padding: 6px 10px !important; font-size: 11px !important; }
+  .locked-icon { font-size: 48px; }
+  .locked-title { font-size: 16px; }
+}
+
+@media (max-height: 460px) and (orientation: landscape) {
+  .realestate-modal { max-height: min(74vh, 500px); }
+  .realestate-modal .realestate-header { padding: 8px 10px; }
+  .realestate-modal .realestate-body { padding: 8px; gap: 8px; }
+  .realestate-card { padding: 8px; gap: 8px; }
+  .property-icon { width: 40px; height: 40px; font-size: 30px; }
+  .property-name { font-size: 13px; }
+  .property-cost, .property-income { font-size: 11px; }
+  .property-owned, .property-timer { font-size: 10px; }
+  .realestate-btn { padding: 7px 10px; font-size: 11px; }
+  .realestate-btn-small { padding: 5px 8px !important; font-size: 10px !important; }
+  .locked-icon { font-size: 40px; }
+  .locked-title { font-size: 14px; }
+}

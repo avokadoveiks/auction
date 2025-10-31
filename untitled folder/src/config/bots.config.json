@@ -1,0 +1,27 @@
+{
+  "enabled": true,
+  "targetRPM": 8,
+  "perColumn": { "minRPM": 2, "maxRPM": 5 },
+  "cooldowns": { "afterBidMs": 4000 },
+  "limits": { "maxConsecutiveOverbidSamePlayer": 2 },
+  "economy": { "minBalance": 30, "maxBalance": 120, "refillPerRound": 10 },
+  "archetypeWeights": { "Turtle": 1.0 },
+  "probabilities": {
+    "baseBidChance": 0.25,
+    "humanLeaderBidChance": 0.25,        
+    "lowPlayersThreshold": 3,
+    "lowPlayersActiveChance": 0.6,
+    "protectHumanLastSeconds": 2,
+    "protectHumanSkipChance": 0.8
+  },
+  "delays": {
+    "minMs": 2000,
+    "maxMs": 6000
+  },
+  "winCap": {
+    "windowSize": 12,
+    "maxBotWinsPerWindow": 2,
+    "throttleNearEndSec": 3,
+    "throttleSkipChance": 0.8
+  }
+}

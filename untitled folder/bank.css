@@ -1,0 +1,90 @@
+/* Bank modal UI — minimalist with gold accents */
+:root{
+  --bank-bg: linear-gradient(180deg, rgba(18,22,38,.92), rgba(18,22,38,.92));
+  --bank-border: rgba(255,255,255,.08);
+  --bank-text: #eef3ff;
+  --bank-muted: #a8b5d5;
+  --bank-gold: #f5d06f;
+  --bank-green: #5eead4;
+  --bank-red: #fb7185;
+}
+
+.bank-overlay{ position:fixed; inset:0; background: rgba(6,10,22,.65); backdrop-filter: blur(4px); display:none; align-items:center; justify-content:center; z-index: 1000;
+  /* Safe-area aware padding in landscape to avoid notch/edges */
+  padding-left: max(12px, env(safe-area-inset-left, 0px), var(--safe-left, 0px));
+  padding-right: max(12px, env(safe-area-inset-right, 0px), var(--safe-right, 0px));
+  padding-top: max(12px, env(safe-area-inset-top, 0px), var(--safe-top, 0px));
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 0px), var(--safe-bottom, 0px));
+  box-sizing: border-box;
+}
+.bank-overlay.open{ display:flex }
+.bank-modal{ width:min(860px, calc(100% - 24px)); max-height:min(86vh, 680px); overflow:hidden; border-radius:14px; background: var(--bank-bg); border:1px solid var(--bank-border); box-shadow: 0 18px 48px rgba(0,0,0,.45); color: var(--bank-text); display:flex; flex-direction:column }
+.bank-modal .bank-header{ display:flex; align-items:center; gap:10px; padding:12px 14px; border-bottom:1px solid var(--bank-border) }
+.bank-modal .bank-title{ font-weight:800; letter-spacing:.3px }
+.bank-modal .bank-spacer{ flex:1 1 auto }
+.bank-modal .bank-close{ appearance:none; border:1px solid var(--bank-border); background:transparent; color:var(--bank-text); padding:8px 10px; border-radius:10px; cursor:pointer }
+.bank-modal .bank-tabs{ display:flex; gap:8px; padding:10px 12px; border-bottom:1px solid var(--bank-border) }
+.bank-modal .bank-tab{ appearance:none; border:1px solid var(--bank-border); background:transparent; color:var(--bank-text); padding:8px 12px; border-radius:999px; cursor:pointer; font-weight:700 }
+.bank-modal .bank-tab.active{ border-color: rgba(245,208,111,.55); color: var(--bank-gold); box-shadow: 0 0 0 1px rgba(245,208,111,.25) inset }
+.bank-modal .bank-body{ padding:14px; overflow:auto; display:grid; gap:14px; flex: 1 1 auto; touch-action: pan-y; -webkit-overflow-scrolling: touch }
+.bank-modal .bank-row{ display:grid; grid-template-columns: 1fr 1fr; gap:14px }
+.bank-modal .bank-card{ position: relative; top:auto; left:auto; right:auto; bottom:auto; width:auto; z-index:auto; background: rgba(255,255,255,.03); border:1px solid var(--bank-border); border-radius:12px; padding:12px; display:grid; gap:10px }
+.bank-modal .bank-card h4{ margin:0; font-size:14px; color: var(--bank-gold) }
+.bank-modal .bank-input{ display:flex; align-items:center; gap:10px }
+.bank-modal .bank-input input[type="number"], .bank-modal .bank-input input[type="range"], .bank-modal .bank-input select {
+  flex:1; background: rgba(255,255,255,.06); border:1px solid var(--bank-border); color: var(--bank-text); padding:8px 10px; border-radius:10px
+}
+.bank-modal .bank-actions{ display:flex; gap:10px; align-items:center }
+.bank-modal .bank-btn{ appearance:none; border:0; background: linear-gradient(180deg,#f5d06f,#f1b350); color:#1a1722; font-weight:800; padding:10px 14px; border-radius:10px; cursor:pointer; box-shadow: 0 6px 18px rgba(241,179,80,.25) }
+.bank-modal .bank-btn.secondary{ background: transparent; color: var(--bank-text); border:1px solid var(--bank-border); box-shadow:none }
+.bank-modal .bank-note{ color: var(--bank-muted); font-size:12px }
+.bank-modal .bank-list{ display:grid; gap:8px }
+.bank-modal .bank-list-item{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px; border-radius:10px; background: rgba(255,255,255,.03); border:1px solid var(--bank-border) }
+.bank-modal .status-chip{ padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid var(--bank-border) }
+.bank-modal .status-ok{ color:#0f172a; background: var(--bank-green); border-color: transparent }
+.bank-modal .status-warn{ color:#0f172a; background: var(--bank-gold); border-color: transparent }
+.bank-modal .status-bad{ color:#fff; background: #ef4444; border-color: transparent }
+.bank-modal .bank-banner{ padding:10px 12px; border-radius:10px; background: rgba(255,255,255,.04); border:1px solid var(--bank-border); color: var(--bank-text) }
+
+@media (max-width: 720px){
+  .bank-modal .bank-row{ grid-template-columns: 1fr }
+}
+
+/* Compact bank modal for short landscape heights (iPhone landscape) */
+@media (max-height: 540px) and (orientation: landscape) {
+  .bank-modal { max-height: min(80vh, 560px); }
+  .bank-modal .bank-header { padding: 10px 12px; }
+  .bank-modal .bank-tabs { padding: 8px 10px; gap: 6px; }
+  .bank-modal .bank-tab { padding: 6px 10px; font-size: 12px; }
+  .bank-modal .bank-body { padding: 10px; gap: 10px; }
+  .bank-modal .bank-row { gap: 10px; }
+  .bank-modal .bank-card { padding: 10px; gap: 8px; }
+  .bank-modal .bank-card h4 { font-size: 13px; }
+  .bank-modal .bank-input input[type="number"],
+  .bank-modal .bank-input input[type="range"],
+  .bank-modal .bank-input select { padding: 6px 8px; }
+  .bank-modal .bank-actions { gap: 8px; }
+  .bank-modal .bank-btn { padding: 8px 12px; font-size: 13px; }
+  .bank-modal .bank-note { font-size: 11px; }
+  .bank-modal .bank-list-item { padding: 8px; }
+  .bank-modal .status-chip { padding: 3px 6px; font-size: 11px; }
+}
+
+@media (max-height: 460px) and (orientation: landscape) {
+  .bank-modal { max-height: min(74vh, 500px); }
+  .bank-modal .bank-header { padding: 8px 10px; }
+  .bank-modal .bank-tabs { padding: 6px 8px; gap: 6px; }
+  .bank-modal .bank-tab { padding: 5px 8px; font-size: 11px; }
+  .bank-modal .bank-body { padding: 8px; gap: 8px; }
+  .bank-modal .bank-row { gap: 8px; }
+  .bank-modal .bank-card { padding: 8px; gap: 6px; }
+  .bank-modal .bank-card h4 { font-size: 12px; }
+  .bank-modal .bank-input input[type="number"],
+  .bank-modal .bank-input input[type="range"],
+  .bank-modal .bank-input select { padding: 5px 7px; font-size: 12px; }
+  .bank-modal .bank-actions { gap: 6px; }
+  .bank-modal .bank-btn { padding: 7px 10px; font-size: 12px; }
+  .bank-modal .bank-note { font-size: 10px; }
+  .bank-modal .bank-list-item { padding: 6px; }
+  .bank-modal .status-chip { padding: 2px 6px; font-size: 10px; }
+}
