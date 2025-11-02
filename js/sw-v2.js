@@ -1,19 +1,19 @@
 // Offline-first service worker (v2) — respects query params for assets to allow cache busting
-const CACHE_VERSION = '2025-10-28-new-bg-v1';
+const CACHE_VERSION = '2025-11-02-restructured';
 const CACHE_NAME = `auction-cache-${CACHE_VERSION}`;
 
 const PRECACHE_URLS = [
   './index.html',
-  './menu.css',
-  './menu.js',
+  './css/menu.css',
+  './js/menu.js',
   './v1.html',
-  './v1.css',
-  './v1.js',
+  './css/v1.css',
+  './js/v1.js',
   './src/auth.js',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  './assets/menu-bg.png'
+  './js/manifest.json',
+  './assets/icons/icon-192.png',
+  './assets/icons/icon-512.png',
+  './assets/images/menu-bg.png'
   // Avatars (humans)
   ,'./assets/bots/humans/h1.jpg','./assets/bots/humans/h2.jpg','./assets/bots/humans/h3.jpg','./assets/bots/humans/h4.jpg',
   './assets/bots/humans/h5.svg','./assets/bots/humans/h6.svg','./assets/bots/humans/h7.svg','./assets/bots/humans/h8.svg','./assets/bots/humans/h9.svg','./assets/bots/humans/h10.svg',

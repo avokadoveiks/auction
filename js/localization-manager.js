@@ -27,7 +27,7 @@
     }
 
     // Загрузка переводов из JSON
-    async loadTranslations(url = 'localization-data.json') {
+    async loadTranslations(url = 'js/localization-data.json') {
       try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`Failed to load translations: ${response.status}`);

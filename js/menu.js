@@ -1,5 +1,5 @@
 (function(){
-  const DEFAULT_WALLPAPER = 'assets/menu-bg.png';
+  const DEFAULT_WALLPAPER = 'assets/images/menu-bg.png';
   const SECONDARY_WALLPAPER = 'https://file+.vscode-resource.vscode-cdn.net/Users/olehkruchko/Downloads/auction-game/ba896bca-48bc-4c09-88fc-d5609189859f.png?version%3D1760910916105';
 
   const ACCOUNTS = [
@@ -161,7 +161,7 @@
       bg.style.opacity = '1';
     }, () => {
       console.warn('Background failed, trying default menu-bg.png:', url);
-      tryLoad('assets/menu-bg.png', (okUrl2) => {
+      tryLoad('assets/images/menu-bg.png', (okUrl2) => {
         bg.style.backgroundImage = `url(${okUrl2})`;
         bg.style.opacity = '1';
       }, () => {

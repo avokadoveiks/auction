@@ -27,7 +27,7 @@ class NoCacheHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
 def main():
     PORT = 5500
-    DIRECTORY = Path(__file__).parent
+    DIRECTORY = Path(__file__).parent.parent  # Go up to auction1 root
     
     os.chdir(DIRECTORY)
     

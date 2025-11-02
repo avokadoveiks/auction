@@ -1,140 +1,716 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
-    <title>Аукцион Игра - iPhone 15</title>
-    <link rel="stylesheet" href="style3.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Меню — Аукционная игра</title>
+  <link rel="manifest" href="/js/manifest.json" />
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Аукцион" />
+  <!-- Preload menu background -->
+  <link rel="preload" as="image" href="assets/images/menu-bg.png" />
+  <link rel="stylesheet" href="css/menu.css?v=1761788419">
+  <link rel="stylesheet" href="css/v1.css?v=2025-10-25-8">
+  <link rel="stylesheet" href="css/bank.css?v=2025-10-20-1">
+  <link rel="stylesheet" href="css/realestate.css?v=2025-10-27-v1">
+  <link rel="stylesheet" href="css/events.css?v=2025-10-27-v1">
+  <script src="js/localization-manager.js?v=1761679997"></script>
+  <style>
+    .neon-edges { position: absolute; inset: 0; pointer-events: none; z-index: 0; contain: paint; }
+    .neon-edges::before { content: ""; position: absolute; inset: 0; border-radius: 16px; clip-path: inset(0);
+      background:
+        linear-gradient(90deg, rgba(0,255,255,0.28), rgba(0,255,255,0) 45%) top/100% 6px no-repeat,
+        linear-gradient(270deg, rgba(255,0,153,0.28), rgba(255,0,153,0) 45%) bottom/100% 6px no-repeat,
+        linear-gradient(0deg, rgba(255,255,0,0.24), rgba(255,255,0,0) 45%) left/6px 100% no-repeat,
+        linear-gradient(180deg, rgba(0,255,255,0.24), rgba(0,255,255,0) 45%) right/6px 100% no-repeat;
+      filter: blur(3px) saturate(1.08);
+      animation: neon-breathe 6s ease-in-out infinite;
+    }
+    @keyframes neon-breathe { 0%,100% { opacity: .45 } 50% { opacity: .9 } }
+    
+    /* Landscape: safe-area отступы для реального горизонтального положения */
+    @media screen and (orientation: landscape) {
+      html, body {
+        height: var(--app-height, 100dvh) !important;
+        max-height: var(--app-height, 100dvh) !important;
+      }
+      
+      #gameCanvas {
+        height: var(--app-height, 100dvh) !important;
+        max-height: var(--app-height, 100dvh) !important;
+      }
+      
+      #menu-rotate {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: var(--app-width, 100vw) !important;
+        height: var(--app-height, 100dvh) !important;
+        max-height: var(--app-height, 100dvh) !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+      }
+    }
+    
+    /* Портрет: поворачиваем контент (меню всегда горизонтально) */
+    @media screen and (orientation: portrait) {
+      .leagues-popup__list,
+      .language-list,
+      .events-popup__card,
+      .friends-list,
+      .friends-list__items,
+      .bank-body,
+      .realestate-body {
+        -webkit-overflow-scrolling: touch !important;
+      }
+
+      html {
+        height: var(--app-height, 100dvh) !important;
+        min-height: var(--app-height, 100dvh) !important;
+        width: var(--app-width, 100vw) !important;
+        position: fixed !important;
+        overflow: hidden !important;
+      }
+      
+      body { 
+        height: var(--app-height, 100dvh) !important;
+        min-height: var(--app-height, 100dvh) !important;
+        width: var(--app-width, 100vw) !important;
+        overflow: hidden !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      
+      #menu-rotate {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: var(--app-height, 100dvh) !important;
+        height: var(--app-width, 100vw) !important;
+        transform-origin: top left !important;
+        transform: rotate(90deg) translateY(-100%) !important;
+        -webkit-transform: rotate(90deg) translateY(-100%) !important;
+        backface-visibility: hidden;
+        will-change: transform;
+        overflow: hidden !important;
+        -webkit-overflow-scrolling: auto !important;
+        /* Safe-area отступы: после поворота left/right = top/bottom; добавлен видимый fallback */
+        padding-top: max(clamp(16px, 6vw, 48px), var(--rot-safe-top, var(--safe-left))) !important;
+        padding-bottom: max(clamp(16px, 6vw, 48px), var(--rot-safe-bottom, var(--safe-right))) !important;
+        padding-left: var(--rot-safe-left, var(--safe-top)) !important;
+        padding-right: var(--rot-safe-right, var(--safe-bottom)) !important;
+        box-sizing: border-box !important;
+      }
+    }
+  </style>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var mediaPortrait = window.matchMedia('(orientation: portrait)');
+      function toPx(value) {
+        return (value || 0).toFixed(2) + 'px';
+      }
+      function updateSafeArea() {
+        var vv = window.visualViewport;
+        if (!vv) {
+          return;
+        }
+        var scale = vv.scale || 1;
+        var left = vv.offsetLeft / scale;
+        var top = vv.offsetTop / scale;
+        var right = Math.max(0, (window.innerWidth - vv.width - vv.offsetLeft) / scale);
+        var bottom = Math.max(0, (window.innerHeight - vv.height - vv.offsetTop) / scale);
+
+        root.style.setProperty('--safe-left', toPx(left));
+        root.style.setProperty('--safe-right', toPx(right));
+        root.style.setProperty('--safe-top', toPx(top));
+        root.style.setProperty('--safe-bottom', toPx(bottom));
+
+        var isPortrait = mediaPortrait.matches;
+        if (isPortrait) {
+          root.style.setProperty('--rot-safe-top', toPx(left));
+          root.style.setProperty('--rot-safe-bottom', toPx(right));
+          root.style.setProperty('--rot-safe-left', toPx(top));
+          root.style.setProperty('--rot-safe-right', toPx(bottom));
+        } else {
+          root.style.setProperty('--rot-safe-top', toPx(top));
+          root.style.setProperty('--rot-safe-bottom', toPx(bottom));
+          root.style.setProperty('--rot-safe-left', toPx(left));
+          root.style.setProperty('--rot-safe-right', toPx(right));
+        }
+      }
+
+      var vv = window.visualViewport;
+      if (vv) {
+        vv.addEventListener('resize', updateSafeArea);
+        vv.addEventListener('scroll', updateSafeArea);
+      }
+      var portraitListener = function () {
+        setTimeout(updateSafeArea, 200);
+      };
+      if (mediaPortrait.addEventListener) {
+        mediaPortrait.addEventListener('change', portraitListener);
+      } else if (mediaPortrait.addListener) {
+        mediaPortrait.addListener(portraitListener);
+      }
+      window.addEventListener('orientationchange', function () {
+        setTimeout(updateSafeArea, 200);
+      });
+      window.addEventListener('resize', updateSafeArea);
+      window.addEventListener('load', updateSafeArea);
+      updateSafeArea();
+    })();
+  </script>
+  <script>
+    // Visible banner to confirm fresh HTML is loaded
+    (function(){
+      const b = document.createElement('div');
+      b.textContent = 'Index HTML v4 (clean) loaded';
+      Object.assign(b.style, { position:'fixed', top:'40px', left:'50%', transform:'translateX(-50%)', background:'#111827', color:'#93c5fd', padding:'6px 10px', borderRadius:'8px', zIndex:9999, font:'12px/1.2 ui-sans-serif', boxShadow:'0 4px 12px rgba(0,0,0,.35)'});
+      document.addEventListener('DOMContentLoaded', ()=>{ document.body.appendChild(b); setTimeout(()=>b.remove(), 1800); });
+    })();
+
+    // Native app behavior: prevent default browser gestures
+    (function(){
+  const SCROLLABLE_SELECTOR = '.leagues-popup__list, .language-list, .events-popup__card, .friends-list, .friends-list__items, .bank-body, .realestate-body';
+
+      const isWithinScrollable = (node) => {
+        let current = node;
+        while (current && current !== document.body && current !== document.documentElement) {
+          if (current.matches && current.matches(SCROLLABLE_SELECTOR)) {
+            if (current.scrollHeight > current.clientHeight || current.scrollWidth > current.clientWidth) {
+              return true;
+            }
+          }
+          current = current.parentElement;
+        }
+        return false;
+      };
+
+      const preventScroll = (event) => {
+        if (isWithinScrollable(event.target)) {
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      };
+
+      const resetScrollPosition = () => {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      };
+
+      document.addEventListener('DOMContentLoaded', () => {
+        ['html', 'body'].forEach(selector => {
+          const el = document.querySelector(selector);
+          if (el) {
+            el.style.overflow = 'hidden';
+            el.style.position = 'fixed';
+            el.style.width = '100%';
+            el.style.touchAction = 'none';
+            el.style.overscrollBehavior = 'none';
+          }
+        });
+        resetScrollPosition();
+      });
+
+      ['touchmove', 'wheel'].forEach(evt => {
+        window.addEventListener(evt, preventScroll, { passive: false });
+        document.addEventListener(evt, preventScroll, { passive: false });
+      });
+
+      window.addEventListener('scroll', resetScrollPosition, { passive: false });
+      document.addEventListener('scroll', resetScrollPosition, { passive: false });
+
+      // Prevent context menu (long press menu on mobile)
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+      }, { passive: false });
+
+      // Prevent double-tap zoom on iOS
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', function(e) {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+          e.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, { passive: false });
+
+      // Prevent pinch zoom
+      document.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+      }, { passive: false });
+
+      document.addEventListener('gesturechange', function(e) {
+        e.preventDefault();
+      }, { passive: false });
+
+      document.addEventListener('gestureend', function(e) {
+        e.preventDefault();
+      }, { passive: false });
+    })();
+
+    // Fix iOS viewport height to eliminate bottom black bar
+    function fixViewportHeight() {
+      var vv = window.visualViewport;
+      var rawH = vv ? vv.height : window.innerHeight;
+      var rawW = vv ? vv.width : window.innerWidth;
+      // Ceil to avoid 1px underflow causing a bottom stripe on iOS
+      var height = Math.ceil(rawH);
+      var width = Math.ceil(rawW);
+      var heightPx = height + 'px';
+      var widthPx = width + 'px';
+
+      document.documentElement.style.setProperty('--app-height', heightPx);
+      document.documentElement.style.setProperty('--app-width', widthPx);
+      
+      // Жёстко фиксируем размеры БЕЗ возможности расширения
+      var root = document.documentElement;
+      root.style.height = heightPx;
+      root.style.minHeight = heightPx;
+      root.style.maxHeight = heightPx;
+      root.style.width = widthPx;
+      root.style.minWidth = widthPx;
+      root.style.overflow = 'hidden';
+      
+      var body = document.body;
+      body.style.height = heightPx;
+      body.style.minHeight = heightPx;
+      body.style.maxHeight = heightPx;
+      body.style.width = widthPx;
+      body.style.minWidth = widthPx;
+      body.style.overflow = 'hidden';
+
+      var canvas = document.getElementById('gameCanvas');
+      if (canvas) {
+        canvas.style.height = heightPx;
+        canvas.style.minHeight = heightPx;
+        canvas.style.maxHeight = heightPx;
+        canvas.style.width = widthPx;
+        canvas.style.minWidth = widthPx;
+      }
+      
+      var menuRotate = document.getElementById('menu-rotate');
+      if (menuRotate) {
+        menuRotate.style.height = heightPx;
+        menuRotate.style.maxHeight = heightPx;
+      }
+    }
+    // Вызываем немедленно
+    fixViewportHeight();
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', fixViewportHeight);
+      window.visualViewport.addEventListener('scroll', fixViewportHeight);
+    }
+    window.addEventListener('resize', fixViewportHeight);
+    window.addEventListener('orientationchange', fixViewportHeight);
+    window.addEventListener('load', fixViewportHeight);
+    // Дополнительный вызов через RAF для гарантии
+    requestAnimationFrame(fixViewportHeight);
+    // И ещё один через небольшую задержку на случай медленного рендера
+    setTimeout(fixViewportHeight, 100);
+  </script>
+  <!-- Match page background to avoid 1px seam on iOS bottom safe area -->
+  <meta name="theme-color" content="#0a0f1e" />
 </head>
 <body>
-    <div class="top-bar">
-        <div class="top-info">
-            <div id="currentAvatar" class="current-avatar">👤</div>
-            <div id="currentName" class="current-name">Игрок1</div>
-            <div id="currentBalance" class="current-balance">💰 500 акций</div>
+  <div id="gameCanvas">
+    <div id="menu-rotate">
+      <div id="bg"></div>
+      <canvas id="sparks-canvas" aria-hidden="true"></canvas>
+  <div class="bg-overlay" aria-hidden="true"></div>
+  <div class="bg-hammer" aria-hidden="true"></div>
+  <div class="neon-edges" aria-hidden="true"></div>
+
+  <div id="ui-root">
+  <main class="menu-screen" role="main">
+    <!-- Верхняя панель: имя, баланс, ресурсы, почта -->
+    <header class="menu-header" aria-label="Верхняя панель">
+      <div class="topbar">
+        <div class="topbar__left">
+          <div class="avatar-small" id="menuAvatar" title="Ваш аватар"></div>
+          <div class="user-block">
+            <div class="user-name" id="menuName">Гость</div>
+            <div class="user-balance" id="menuBalance">Баланс: 9 800 монет</div>
+          </div>
         </div>
-        <div class="top-right">
-            <button onclick="nextAccount()">Следующий игрок</button>
-            <select id="accountSelector" onchange="switchAccount(this.value)">
-                <option value="0">Игрок1</option>
-                <option value="1">Игрок2</option>
-                <option value="2">Игрок3</option>
-            </select>
-            <button class="top-button" onclick="toggleWinners()">Победы</button>
-            <button class="top-button">Настройки</button>
+        <div class="topbar__right">
+          <button class="top-icon" id="mailBtn" type="button" title="Почта">✉️</button>
+          <button class="top-icon" id="reloadBtn" type="button" title="Обновить страницу">🔄</button>
+          <button class="top-icon" id="settingsBtn" type="button" title="Настройки">⚙️</button>
+          <div class="version-badge" title="Версия меню">v1.6.6</div>
         </div>
+      </div>
+    </header>
+
+    <!-- Средняя область: слева аватар + Банк/Магазин/События, центр пустой, справа друзья -->
+    <div class="menu-content">
+      <aside class="left-panel" aria-label="Левая панель">
+        <div class="left-panel__actions">
+          <button class="btn btn--panel" id="bankBtn" type="button">
+            <span class="btn-icon">🏦</span>
+            <span class="btn-label" data-localize="menu_bank">Банк</span>
+          </button>
+          <button class="btn btn--panel" id="realestateBtn" type="button">
+            <span class="btn-icon">🏠</span>
+            <span class="btn-label" data-localize="menu_realestate">Недвижимость</span>
+          </button>
+          <button class="btn btn--panel" id="storeBtn" type="button">
+            <span class="btn-icon">🛒</span>
+            <span class="btn-label" data-localize="menu_store">Магазин</span>
+          </button>
+          <button class="btn btn--panel" id="eventsBtn" type="button">
+            <span class="btn-icon">🎉</span>
+            <span class="btn-label" data-localize="menu_events">События</span>
+          </button>
+        </div>
+      </aside>
+
+      <section class="menu-center" aria-label="Центральная зона"></section>
+
+      <aside class="friends-panel" aria-label="Друзья">
+        <button class="btn friends-toggle" id="friendsToggle" type="button" aria-expanded="false">
+          <span class="friends-toggle__icon">➤</span>
+          <span class="friends-toggle__label" data-localize="menu_friends">Друзья</span>
+        </button>
+        <div class="friends-list" id="friendsList" hidden>
+          <div class="friends-list__scrollable">
+            <ul class="friends-list__items" id="friendsItems"></ul>
+          </div>
+          <button class="btn btn--panel friends-invite friends-add-btn" id="addFriendBtn" type="button">
+            <span class="add-friend-icon">👤➕</span>
+            <span>Добавить друга</span>
+          </button>
+        </div>
+      </aside>
     </div>
-    <div class="game-container">
-        <div class="columns-container">
-            <div class="column" data-column="1">
-                <div class="column-label">Шанс</div>
-                <div class="timer-notify" id="timer-notify" style="display:none;">⚠️ Таймер непредсказуем — может закончиться в любую секунду!</div>
-                <div class="column-bank" id="bank-1">Банк: 3</div>
-                <div class="bet-info" id="bet-info-1" style="display: none;">
-                    <img class="bet-avatar" id="bet-avatar-1" src="" alt="Avatar">
-                    <div class="bet-name" id="bet-name-1"></div>
-                </div>
-                <div style="flex: 1;"></div>
-                <div class="column-timer" id="timer-1">20</div>
-                <!-- Знак запрета автоставки для колонки 1 -->
-                <div class="column-badges">
-                    <div class="no-auto-badge" title="В этой колонке нельзя делать автоставку" aria-label="В этой колонке нельзя делать автоставку">
-                        <span class="no-auto-text">AUTO</span>
-                    </div>
-                    <span class="timer-badge-icon">⏳</span>
-                </div>
-                <div class="no-auto-notify" id="no-auto-notify" style="display:none;">⚠️ Автоставки делать нельзя!</div>
-                <div class="bet-controls">
-                    <button class="bet-button" onclick="makeBet(1, 2)">Ставка 2</button>
-                    <button class="auto-button" id="auto-1" onclick="toggleAuto(1)" disabled>Автоставка (недоступно)</button>
-                </div>
-            </div>
-            <div class="column" data-column="2">
-                <div class="column-label">Любитель</div>
-                <div class="column-bank" id="bank-2">Банк: 6</div>
-                <div class="bet-info" id="bet-info-2" style="display: none;">
-                    <img class="bet-avatar" id="bet-avatar-2" src="" alt="Avatar">
-                    <div class="bet-name" id="bet-name-2"></div>
-                </div>
-                <div style="flex: 1;"></div>
-                <div class="column-timer" id="timer-2">20</div>
-                <div class="bet-controls">
-                    <button class="bet-button" onclick="makeBet(2, 4)">Ставка 4</button>
-                    <button class="auto-button" id="auto-2" onclick="toggleAuto(2)">Автоставка (выкл)</button>
-                </div>
-            </div>
-            <div class="column" data-column="3">
-                <div class="column-label">Профессионал</div>
-                <div class="column-bank" id="bank-3">Банк: 9</div>
-                <div class="bet-info" id="bet-info-3" style="display: none;">
-                    <img class="bet-avatar" id="bet-avatar-3" src="" alt="Avatar">
-                    <div class="bet-name" id="bet-name-3"></div>
-                </div>
-                <div style="flex: 1;"></div>
-                <div class="column-timer" id="timer-3">20</div>
-                <div class="bet-controls">
-                    <button class="bet-button" onclick="makeBet(3, 6)">Ставка 6</button>
-                    <button class="auto-button" id="auto-3" onclick="toggleAuto(3)">Автоставка (выкл)</button>
-                </div>
-            </div>
-            <div class="column" data-column="4">
-                <div class="column-label">Дуэль</div>
-                <div class="column-bank" id="bank-4">Банк: 12</div>
-                <div class="bet-info" id="bet-info-4" style="display: none;">
-                    <img class="bet-avatar" id="bet-avatar-4" src="" alt="Avatar">
-                    <div class="bet-name" id="bet-name-4"></div>
-                </div>
-                <div style="flex: 1;"></div>
-                <div class="column-timer" id="timer-4">20</div>
-                <div class="column-badges">
-                    <div class="duel-badge" id="duel-badge" title="Дуэль" aria-label="Дуэль">⚔️</div>
-                    <div class="duel-notify" id="duel-notify" style="display:none;">👥 Только 2 игрока</div>
-                </div>
-                <div class="bet-controls">
-                    <button class="bet-button" onclick="makeBet(4, 8)">Ставка 8</button>
-                    <button class="auto-button" id="auto-4" onclick="toggleAuto(4)">Автоставка (выкл)</button>
-                </div>
-            </div>
-            <div class="column" data-column="5">
-                <div class="column-label">Мастер</div>
-                <div class="column-bank" id="bank-5">Банк: 15</div>
-                <div class="bet-info" id="bet-info-5" style="display: none;">
-                    <img class="bet-avatar" id="bet-avatar-5" src="" alt="Avatar">
-                    <div class="bet-name" id="bet-name-5"></div>
-                </div>
-                <div style="flex: 1;"></div>
-                <div class="column-timer" id="timer-5">20</div>
-                <div class="bet-controls">
-                    <button class="bet-button" onclick="makeBet(5, 10)">Ставка 10</button>
-                    <button class="auto-button" id="auto-5" onclick="toggleAuto(5)">Автоставка (выкл)</button>
-                </div>
-            </div>
-        </div>
+  </main>
+
+  <!-- Нижняя панель: навигация слева, CTA справа -->
+  <footer class="menu-bottom" aria-label="Нижняя панель">
+    <nav class="menu-bottom__nav" aria-label="Навигация">
+      <button class="btn nav-button" id="bagBtn" type="button">
+        <span class="nav-button__icon">🎒</span>
+        <span class="nav-button__label" data-localize="menu_bag">Сумка</span>
+      </button>
+      <button class="btn nav-button" id="achievementsBtn" type="button">
+        <span class="nav-button__icon">🏆</span>
+        <span class="nav-button__label" data-localize="menu_top">Топ</span>
+      </button>
+      <button class="btn nav-button" id="modeBtn" type="button">
+        <span class="nav-button__icon">⚔️</span>
+        <span class="nav-button__label" data-localize="menu_mode">Режим</span>
+      </button>
+      <button class="btn nav-button" id="feedbackBtn" type="button">
+        <span class="nav-button__icon">💡</span>
+        <span class="nav-button__label" data-localize="menu_feedback">Предложить</span>
+      </button>
+      <button class="btn nav-button" id="bugReportBtn" type="button">
+        <span class="nav-button__icon">🐛</span>
+        <span class="nav-button__label" data-localize="menu_bug_report">Сообщить об ошибке</span>
+      </button>
+    </nav>
+    <div class="menu-actions" aria-label="Действия">
+      <button class="btn cta cta--secondary" id="leaguesBtn" type="button" data-localize="menu_leagues">Лига</button>
+      <button class="btn cta cta--primary" id="playBtn" type="button" data-localize="menu_play">Играть</button>
     </div>
-    <div class="bottom-bar">
-        <button class="top-button">Меню</button>
-        <div class="bottom-spacer"></div>
-        <button class="chat-button" onclick="toggleChat()">💬</button>
-    </div>
-    <div class="chat-panel" id="chatPanel">
-        <div class="chat-header">
-            <h3>Чат игроков</h3>
-            <button onclick="toggleChat()">Закрыть</button>
+  </footer>
+  </div><!-- /#ui-root -->
+</div>
+
+  <!-- Popup: Обратная связь -->
+  <div class="leagues-popup" id="feedbackPopup" hidden>
+    <div class="leagues-popup__backdrop" id="feedbackBackdrop" aria-hidden="true"></div>
+    <div class="leagues-popup__card" role="dialog" aria-modal="true" aria-labelledby="feedbackPopupTitle">
+      <header class="leagues-popup__header">
+        <h2 class="leagues-popup__title" id="feedbackPopupTitle" data-localize="feedback_title">Предложить идею</h2>
+        <button class="leagues-popup__close" id="feedbackCloseBtn" aria-label="Закрыть">×</button>
+      </header>
+      <div class="feedback-body">
+        <p class="feedback-description" data-localize="feedback_description">Поделись своей идеей или предложением по улучшению игры!</p>
+        <textarea 
+          class="feedback-textarea" 
+          id="feedbackTextarea" 
+          placeholder="Напиши своё предложение здесь..."
+          data-localize-placeholder="feedback_placeholder"
+          rows="6"
+          maxlength="500"></textarea>
+        <div class="feedback-counter">
+          <span id="feedbackCharCount">0</span> / 500
         </div>
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input">
-            <input type="text" id="chatInput" placeholder="Сообщение...">
-            <button onclick="sendMessage()">Отправить</button>
+        <div class="feedback-actions">
+          <button class="btn feedback-btn feedback-btn--back" id="feedbackBackBtn" data-localize="feedback_back">Назад</button>
+          <button class="btn feedback-btn feedback-btn--submit" id="feedbackSubmitBtn" data-localize="feedback_submit">Отправить</button>
         </div>
+      </div>
+      <div class="feedback-success" id="feedbackSuccess" hidden>
+        <span class="feedback-success-icon">✓</span>
+        <p class="feedback-success-text" data-localize="feedback_success">Спасибо! Твоя идея отправлена</p>
+      </div>
     </div>
-    <!-- Модалка истории побед -->
-    <div class="winners-panel" id="winnersPanel">
-        <div class="winners-header">
-            <h3>История побед</h3>
-            <button onclick="toggleWinners()">Закрыть</button>
+  </div>
+
+  <!-- Popup: Сообщить об ошибке -->
+  <div class="leagues-popup" id="bugReportPopup" hidden>
+    <div class="leagues-popup__backdrop" id="bugReportBackdrop" aria-hidden="true"></div>
+    <div class="leagues-popup__card" role="dialog" aria-modal="true" aria-labelledby="bugReportPopupTitle">
+      <header class="leagues-popup__header">
+        <h2 class="leagues-popup__title" id="bugReportPopupTitle" data-localize="bug_report_title">Сообщить об ошибке</h2>
+        <button class="leagues-popup__close" id="bugReportCloseBtn" aria-label="Закрыть">×</button>
+      </header>
+      <div class="feedback-body">
+        <p class="feedback-description" data-localize="bug_report_description">Опишите баг или ошибку, которую вы встретили в игре.</p>
+        <textarea 
+          class="feedback-textarea" 
+          id="bugReportTextarea" 
+          placeholder="Опишите ошибку здесь..."
+          data-localize-placeholder="bug_report_placeholder"
+          rows="6"
+          maxlength="500"></textarea>
+        <div class="feedback-counter">
+          <span id="bugReportCharCount">0</span> / 500
         </div>
-        <div class="winners-list" id="winnersList"></div>
+        <div class="feedback-actions">
+          <button class="btn feedback-btn feedback-btn--back" id="bugReportBackBtn" data-localize="feedback_back">Назад</button>
+          <button class="btn feedback-btn feedback-btn--submit" id="bugReportSubmitBtn" data-localize="feedback_submit">Отправить</button>
+        </div>
+      </div>
+      <div class="feedback-success" id="bugReportSuccess" hidden>
+        <span class="feedback-success-icon">✓</span>
+        <p class="feedback-success-text" data-localize="bug_report_success">Спасибо! Сообщение об ошибке отправлено</p>
+      </div>
     </div>
-    <script src="script3.js"></script>
+  </div>
+
+  <!-- Popup: Ваша лига -->
+  <div class="leagues-popup" id="leaguesPopup" hidden>
+    <div class="leagues-popup__backdrop" id="leaguesBackdrop" aria-hidden="true"></div>
+    <div class="leagues-popup__card" role="dialog" aria-modal="true" aria-labelledby="leaguesPopupTitle">
+      <header class="leagues-popup__header">
+        <h2 class="leagues-popup__title" id="leaguesPopupTitle">Ваша лига</h2>
+        <button class="leagues-popup__close" id="leaguesCloseBtn" aria-label="Закрыть">×</button>
+      </header>
+      <div class="leagues-popup__list" id="leagueChoices"></div>
+    </div>
+  </div>
+
+  <!-- Popup: Настройки -->
+  <div class="leagues-popup" id="settingsPopup" hidden>
+    <div class="leagues-popup__backdrop" id="settingsBackdrop" aria-hidden="true"></div>
+    <div class="leagues-popup__card" role="dialog" aria-modal="true" aria-labelledby="settingsPopupTitle">
+      <header class="leagues-popup__header">
+        <h2 class="leagues-popup__title" id="settingsPopupTitle" data-localize="menu_settings">Настройки</h2>
+        <button class="leagues-popup__close" id="settingsCloseBtn" aria-label="Закрыть">×</button>
+      </header>
+      <div class="leagues-popup__list" style="padding: 8px 4px; display: flex; flex-direction: column; gap: 10px;">
+        <!-- Language Selection -->
+        <button class="btn btn--panel" id="languageOpenBtn" type="button" style="display: flex; justify-content: space-between; align-items: center;">
+          <span data-localize="settings_language">Язык / Language</span>
+          <span style="font-size: 18px;">→</span>
+        </button>
+        
+        <button class="btn btn--panel" id="signOutBtn" type="button" data-localize="settings_signout">Сменить аккаунт</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup: Выбор языка -->
+  <div class="leagues-popup" id="languagePopup" hidden>
+    <div class="leagues-popup__backdrop" id="languageBackdrop" aria-hidden="true"></div>
+    <div class="leagues-popup__card" role="dialog" aria-modal="true" aria-labelledby="languagePopupTitle">
+      <header class="leagues-popup__header">
+        <h2 class="leagues-popup__title" id="languagePopupTitle" data-localize="settings_language">Язык / Language</h2>
+        <button class="leagues-popup__close" id="languageCloseBtn" aria-label="Закрыть">×</button>
+      </header>
+      <div class="leagues-popup__list" id="languageList"></div>
+    </div>
+  </div>
+
+  <!-- Popup: Топ (История побед) -->
+  <div class="leagues-popup" id="winnersPopup" hidden>
+    <div class="leagues-popup__backdrop" id="winnersBackdrop" aria-hidden="true"></div>
+    <div class="leagues-popup__card winners-popup-card" role="dialog" aria-modal="true" aria-labelledby="winnersPopupTitle">
+      <header class="leagues-popup__header">
+        <h2 class="leagues-popup__title" id="winnersPopupTitle">Топ</h2>
+        <button class="leagues-popup__close" id="winnersCloseBtn" aria-label="Закрыть">×</button>
+      </header>
+      <div class="winners-tabs">
+        <button class="tab-button active" data-period="recent">Недавние</button>
+        <button class="tab-button" data-period="24h">24ч</button>
+        <button class="tab-button" data-period="7d">7дн</button>
+        <button class="tab-button" data-period="1m">1мес</button>
+      </div>
+      <div class="winners-list-container" id="winnersListMenu"></div>
+    </div>
+  </div>
+
+  <!-- Popup: События -->
+  <div class="events-popup" id="eventsPopup" hidden>
+    <div class="events-popup__backdrop" id="eventsBackdrop" aria-hidden="true"></div>
+    <div class="events-popup__card" role="dialog" aria-modal="true" aria-labelledby="eventsPopupTitle">
+      <header class="events-popup__header">
+        <h2 class="events-popup__title" id="eventsPopupTitle" data-localize="events_title">События</h2>
+        <button class="events-popup__close" id="eventsCloseBtn" aria-label="Закрыть">×</button>
+      </header>
+      <div id="eventsContent"></div>
+    </div>
+  </div>
+
+  </div>
+  <script src="js/sparks-effect.js?v=1761679997"></script>
+  <script src="js/bank-system.js?v=2025-10-20-1"></script>
+  <script src="js/bank-ui.js?v=2025-10-20-1"></script>
+  <script src="js/realestate-system.js?v=2025-10-27-v1"></script>
+  <script src="js/realestate-ui.js?v=2025-10-27-v1"></script>
+  <script src="js/events-system.js?v=2025-10-27-v1"></script>
+  <script src="js/events-ui.js?v=2025-10-27-v1"></script>
+  <script src="js/menu.js?v=1761788419"></script>
+  <!-- Firebase for sign-out in settings -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
+  <script src="js/firebase-config.js" defer></script>
+  <script type="module">
+    import { initLeaguesPanel } from './src/ui/leaguesPanel.js';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initLeaguesPanel().catch(error => {
+        console.error('[Menu] Ошибка инициализации панелей лиг', error);
+      });
+    });
+  </script>
+  <script>
+    // Отключаем сервис-воркер для отладки
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(reg => reg.unregister());
+      });
+    }
+    /* ВРЕМЕННО ОТКЛЮЧЁН
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function(){
+        navigator.serviceWorker.register('js/sw-v2.js')
+          .then(reg => {
+            console.log('[SW] Registered');
+            
+            // Проверка обновлений каждую минуту
+            setInterval(() => {
+              reg.update();
+            }, 1 * 60 * 1000);
+            
+            // Слушаем обновления
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  showUpdateNotification();
+                }
+              });
+            });
+          })
+          .catch(err => console.log('[SW] Registration failed:', err));
+        
+        // Слушаем сообщения от Service Worker
+        navigator.serviceWorker.addEventListener('message', event => {
+          if (event.data && event.data.type === 'SW_UPDATED') {
+            console.log('[SW] New version activated:', event.data.version);
+            showUpdateNotification();
+          }
+        });
+      });
+      
+      // Показать уведомление об обновлении
+      function showUpdateNotification() {
+        const notification = document.createElement('div');
+        notification.innerHTML = `
+          <div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; background: linear-gradient(135deg, #3f82ff, #79a8ff); color: #fff; padding: 16px 24px; border-radius: 12px; box-shadow: 0 8px 24px rgba(63, 130, 255, 0.4); display: flex; align-items: center; gap: 12px; font-family: system-ui; max-width: 90vw;">
+            <span>🎉 Доступно обновление!</span>
+            <button onclick="location.reload()" style="background: rgba(255,255,255,0.95); color: #3f82ff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: inherit;">
+              Обновить
+            </button>
+            <button onclick="this.closest('div').parentElement.remove()" style="background: transparent; color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.3); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-family: inherit;">
+              Позже
+            </button>
+          </div>
+        `;
+        document.body.appendChild(notification);
+        
+        // Автоудаление через 10 секунд
+        setTimeout(() => {
+          if (notification.parentElement) notification.remove();
+        }, 10000);
+      }
+    }
+    */
+  </script>
+  
+  <!-- Dev Helper: Установка тестовых данных -->
+  <script>
+    // Функция для разработчика - устанавливает 1000 сделок
+    window.setDevDeals = function(accountId = 'delta', deals = 1000) {
+      if (typeof RealEstateSystem === 'undefined') {
+        console.error('RealEstateSystem не загружена');
+        return;
+      }
+      
+      // Получаем текущее состояние или создаем новое
+      const key = `realestate_${accountId}`;
+      let state = JSON.parse(localStorage.getItem(key) || 'null');
+      
+      if (!state) {
+        state = {
+          successfulDeals: deals,
+          owned: {},
+          lastCollection: {}
+        };
+      } else {
+        state.successfulDeals = deals;
+      }
+      
+      localStorage.setItem(key, JSON.stringify(state));
+      console.log(`✅ Установлено ${deals} успешных сделок для аккаунта ID: "${accountId}"`);
+      console.log('Текущее состояние:', state);
+      console.log('Обновите страницу или откройте панель недвижимости');
+    };
+    
+    // Автоматически устанавливаем для аккаунта "delta" (Олег) при загрузке страницы
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const key = `realestate_delta`;
+        let state = JSON.parse(localStorage.getItem(key) || 'null');
+        if (!state || (state.successfulDeals || 0) < 1000) {
+          window.setDevDeals('delta', 1000);
+          console.log('🎯 Автоматически установлено 1000 сделок для аккаунта Олег (ID: delta)');
+        }
+      }, 500);
+    });
+  </script>
+  <!-- Simple iOS canvas sizing fix: force the main canvas to exactly window inner size -->
+  <script>
+    function fixCanvasSize() {
+      const canvas = document.getElementById('gameCanvas');
+      if (!canvas) return;
+      canvas.style.position = 'fixed';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+    }
+    // Вызываем сразу, не дожидаясь load
+    fixCanvasSize();
+    // И подписываемся на события
+    window.addEventListener('load', fixCanvasSize);
+    window.addEventListener('resize', fixCanvasSize);
+    window.addEventListener('orientationchange', fixCanvasSize);
+    // Дополнительный вызов через requestAnimationFrame для гарантии
+    requestAnimationFrame(fixCanvasSize);
+  </script>
 </body>
 </html>

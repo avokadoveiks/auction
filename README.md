@@ -1,16 +1,163 @@
-# Auction Game — Version 1
+# Аукционная игра v1.6.6
 
-This is a browser-based auction game UI (vanilla HTML/CSS/JS).
+Многопользовательская браузерная игра с системой аукционов, ботами, экономикой и прогрессией.
 
-What’s included in v1:
-- Column 1: right-side badges (no-auto with AUTO text and black strike), timer ⏳ with notification
-- Column 4: duel badge with click notification
-- Refined layout/styles optimized for landscape
+## 🚀 Быстрый старт
 
-How to run locally
-- Use any static server. For example (Python 3):
-  - python3 -m http.server 8000
-  - Open http://localhost:8000/index3.html
+### Запуск локального сервера
 
-Versioning
-- This snapshot is tagged locally as v1.0.0 using Git.
+```bash
+python3 scripts/dev-server.py
+```
+
+Затем откройте http://localhost:5500 в браузере.
+
+### Альтернативные команды
+
+```bash
+# Запуск с автоперезагрузкой
+python3 scripts/dev-server-livereload.py
+
+# Запуск через скрипт (создаёт PID-файл)
+./scripts/dev-start.sh
+
+# Остановка сервера
+./scripts/stop_server.sh
+```
+
+## 📁 Структура проекта
+
+```
+auction1/
+├── css/                   # Все стили
+│   ├── menu.css          # Стили меню
+│   ├── v1.css            # Стили игрового экрана
+│   ├── bank.css          # Стили банковской системы
+│   ├── realestate.css    # Стили недвижимости
+│   └── events.css        # Стили событий
+├── js/                    # Все скрипты
+│   ├── menu.js           # Логика главного меню
+│   ├── v1.js             # Основная логика аукционов
+│   ├── bank-system.js    # Банковская система
+│   ├── bank-ui.js        # UI банка
+│   ├── realestate-system.js  # Система недвижимости
+│   ├── realestate-ui.js      # UI недвижимости
+│   ├── events-system.js      # Система событий
+│   ├── events-ui.js          # UI событий
+│   ├── sparks-effect.js      # Визуальные эффекты
+│   ├── localization-manager.js  # Система локализации
+│   ├── localization-data.json   # Переводы интерфейса
+│   ├── manifest.json            # Манифест PWA
+│   └── sw-v2.js                 # Service worker
+├── assets/                # Ресурсы
+│   ├── icons/            # Иконки PWA
+│   │   ├── icon-192.png
+│   │   ├── icon-512.png
+│   │   └── icon.svg
+│   ├── images/           # Изображения
+│   │   └── menu-bg.png  # Фон меню (молот)
+│   └── bots/            # Аватары ботов
+│       ├── animals/     # Животные (a1-a10)
+│       ├── humans/      # Люди (h1-h10)
+│       └── landscapes/  # Пейзажи (l1-l10)
+├── scripts/              # Скрипты разработки
+│   ├── dev-server.py          # Основной сервер без кэширования
+│   ├── dev-server-livereload.py  # Сервер с автоперезагрузкой
+│   ├── dev-start.sh           # Скрипт запуска с PID
+│   └── start_server.sh        # Универсальный скрипт управления
+├── src/                  # Исходный код модулей
+│   ├── auth.js          # Аутентификация через Firebase
+│   ├── index.js         # Точка входа для модульной системы
+│   ├── bots/            # Система ботов
+│   │   ├── BotArchetypes.js  # Архетипы ботов (стратегии)
+│   │   ├── BotDirector.js    # Управление ботами
+│   │   └── BotRunner.js      # Выполнение действий ботов
+│   ├── config/
+│   │   └── bots.config.json  # Конфигурация ботов
+│   ├── core/            # Основные системы
+│   │   ├── analytics.js      # Аналитика
+│   │   ├── Events.js         # Система событий
+│   │   ├── leagues.js        # Лиги
+│   │   ├── matchmaking.js    # Матчмейкинг
+│   │   └── settings.js       # Настройки
+│   ├── fx/              # Визуальные эффекты
+│   │   ├── avk-coins.css
+│   │   ├── avk-coins.js
+│   │   ├── coins.js
+│   │   └── winEffects.js
+│   └── ui/
+│       └── leaguesPanel.js   # UI панель лиг
+├── settings/             # JSON конфигурации
+│   ├── economy.json     # Экономические параметры
+│   ├── leagues.json     # Настройки лиг
+│   └── matchmaking.json # Параметры матчмейкинга
+├── index.html            # Главное меню игры
+├── v1.html               # Экран игрового процесса
+└── README.md             # Этот файл
+```
+
+## 🎮 Возможности
+
+### Главное меню
+- 🏦 **Банк** — вклады и кредиты
+- 🏠 **Недвижимость** — покупка объектов для пассивного дохода
+- 🛒 **Магазин** — покупка улучшений
+- 🎉 **События** — специальные события и награды
+- 👥 **Друзья** — социальные функции
+- 🏆 **Топ** — таблица лидеров
+- 🎒 **Сумка** — инвентарь
+- ⚔️ **Режим** — выбор игрового режима
+- 💡 **Предложить** — отправка обратной связи
+
+### Игровой процесс
+- 5 колонок аукционов разной сложности
+- Система ботов с разными стратегиями
+- Таймеры и автоставки
+- Система лиг (Бронза → Платина)
+- Экономика с балансом и прогрессией
+- Эффекты побед и анимации
+
+## ⚙️ Технологии
+
+- **Vanilla JavaScript** (ES6+)
+- **CSS3** с анимациями и градиентами
+- **PWA** (Progressive Web App)
+- **Service Worker** для оффлайн-режима
+- **LocalStorage** для сохранения прогресса
+- **Firebase** (опционально, для аутентификации)
+
+## 🔧 Разработка
+
+### Особенности dev-сервера
+
+- **Порт**: 5500
+- **Кэширование отключено** — изменения видны сразу после Ctrl+R
+- **CORS**: разрешены все источники для разработки
+- **Livereload** — автоматическая перезагрузка при изменении файлов (в dev-server-livereload.py)
+
+### Файлы сборки/развёртывания
+
+- `assets/icons/icon-*.png` — иконки PWA для установки на устройства
+- `server.pid` — PID запущенного сервера (автоматически создаётся)
+
+## 📝 Заметки
+
+- Все файлы теперь организованы по папкам для профессионального GitHub-репозитория
+- Все старые версии (snapshots) и папка `untitled folder` удалены
+- Service Worker кэширует ресурсы для быстрой загрузки
+- Игра сохраняет прогресс в LocalStorage браузера
+- Firebase опционален — можно играть без регистрации
+- Поддержка мобильных устройств (responsive + PWA)
+
+## 🐛 Известные проблемы
+
+- `firebase-config.js` отсутствует (опционален, для Firebase)
+
+## 📄 Лицензия
+
+Частный проект.
+
+---
+**Версия**: v1.6.6  
+**Дата обновления**: 2 ноября 2025  
+**Автор**: avokadoveiks

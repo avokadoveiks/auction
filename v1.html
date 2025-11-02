@@ -4,13 +4,13 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 	<title>Аукционная игра v1.2.0</title>
-	<link rel="manifest" href="/manifest.json" />
-	<link rel="apple-touch-icon" href="/icon-192.png" />
+	<link rel="manifest" href="/js/manifest.json" />
+	<link rel="apple-touch-icon" href="/assets/icons/icon-192.png" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 	<meta name="apple-mobile-web-app-title" content="Аукцион" />
-            <link rel="stylesheet" href="v1.css?v=2025-10-29-full-height">
-    <link rel="stylesheet" href="bank.css?v=2025-10-27-safe-area-v2">
+            <link rel="stylesheet" href="css/v1.css?v=2025-10-29-full-height">
+    <link rel="stylesheet" href="css/bank.css?v=2025-10-27-safe-area-v2">
     <style>
         /* КРИТИЧЕСКИ ВАЖНО: body без bottom padding */
         html {
@@ -369,18 +369,18 @@
     </aside>
     </div>
 
-    <script src="bank-system.js?v=2025-10-20-1"></script>
-    <script src="bank-ui.js?v=2025-10-20-1"></script>
-    <script src="realestate-system.js?v=2025-10-27-v1"></script>
-    <script src="realestate-ui.js?v=2025-10-27-v1"></script>
-    <script src="v1.js?v=2025-10-28-v1.6.7"></script>
+    <script src="js/bank-system.js?v=2025-10-20-1"></script>
+    <script src="js/bank-ui.js?v=2025-10-20-1"></script>
+    <script src="js/realestate-system.js?v=2025-10-27-v1"></script>
+    <script src="js/realestate-ui.js?v=2025-10-27-v1"></script>
+    <script src="js/v1.js?v=2025-10-28-v1.6.7"></script>
 
     <!-- Firebase SDK (Compat for simple global usage) -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" defer></script>
     <!-- Put your real config into firebase-config.js (not committed); example is provided -->
-    <script src="firebase-config.js" defer></script>
+    <script src="js/firebase-config.js" defer></script>
     <script src="src/auth.js?v=2025-10-26-4" defer></script>
     
     <!-- Bot System Integration -->
@@ -403,7 +403,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function(){
-                navigator.serviceWorker.register('sw-v2.js')
+                navigator.serviceWorker.register('js/sw-v2.js')
                     .then(reg => {
                         console.log('[SW] Registered');
                         
