@@ -490,6 +490,27 @@
     </div>
   </div>
 
+  <!-- Popup: Выбор режима -->
+  <div class="leagues-popup" id="modePopup" hidden>
+    <div class="leagues-popup__backdrop" id="modeBackdrop" aria-hidden="true"></div>
+    <div class="leagues-popup__card mode-popup__card" role="dialog" aria-modal="true" aria-labelledby="modePopupTitle">
+      <header class="leagues-popup__header">
+        <h2 class="leagues-popup__title" id="modePopupTitle" data-localize="mode_title">Выбор режима</h2>
+        <button class="leagues-popup__close" id="modeCloseBtn" aria-label="Закрыть">×</button>
+      </header>
+      <div class="mode-popup__body">
+        <button class="btn mode-btn mode-btn--classic" id="classicModeBtn" type="button">
+          <span class="mode-btn__icon">⚔️</span>
+          <span class="mode-btn__label" data-localize="mode_classic">Классический</span>
+        </button>
+        <button class="btn mode-btn mode-btn--economic" id="economicModeBtn" type="button">
+          <span class="mode-btn__icon">💰</span>
+          <span class="mode-btn__label" data-localize="mode_economic">Экономический</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Popup: Ваша лига -->
   <div class="leagues-popup" id="leaguesPopup" hidden>
     <div class="leagues-popup__backdrop" id="leaguesBackdrop" aria-hidden="true"></div>

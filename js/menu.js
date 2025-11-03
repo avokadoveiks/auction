@@ -221,7 +221,35 @@
   }
 
   function openMode(){
-    alert('Выбор режима появится позже.');
+    const popup = document.getElementById('modePopup');
+    const backdrop = document.getElementById('modeBackdrop');
+    const closeBtn = document.getElementById('modeCloseBtn');
+    const classicBtn = document.getElementById('classicModeBtn');
+    const economicBtn = document.getElementById('economicModeBtn');
+
+    if (!popup || !backdrop) return;
+
+    // Show popup
+    popup.removeAttribute('hidden');
+
+    // Close handlers
+    const closeMode = () => {
+      popup.setAttribute('hidden', '');
+    };
+
+    closeBtn.onclick = closeMode;
+    backdrop.onclick = closeMode;
+
+    // Mode selection handlers (пока без логики, только закрытие)
+    classicBtn.onclick = () => {
+      console.log('Выбран классический режим');
+      closeMode();
+    };
+
+    economicBtn.onclick = () => {
+      console.log('Выбран экономический режим');
+      closeMode();
+    };
   }
 
   function openFeedback() {

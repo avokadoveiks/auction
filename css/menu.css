@@ -1072,6 +1072,106 @@ body::-webkit-scrollbar {
     height: 32px;
   }
 
+  /* Mode Popup Styles */
+  #modePopup .mode-popup__card {
+    max-width: 420px;
+    width: min(420px, calc(100vw - 40px));
+  }
+
+  .mode-popup__body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px 20px;
+  }
+
+  .mode-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, rgba(94, 114, 235, 0.12) 0%, rgba(139, 92, 246, 0.12) 100%);
+    border: 2px solid rgba(139, 92, 246, 0.3);
+    border-radius: var(--radius-lg);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mode-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(94, 114, 235, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .mode-btn:hover {
+    transform: translateY(-2px);
+    border-color: rgba(139, 92, 246, 0.6);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25), 
+                0 0 0 1px rgba(139, 92, 246, 0.1) inset;
+  }
+
+  .mode-btn:hover::before {
+    opacity: 1;
+  }
+
+  .mode-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+  }
+
+  .mode-btn__icon {
+    font-size: 28px;
+    filter: drop-shadow(0 2px 8px rgba(139, 92, 246, 0.4));
+    z-index: 1;
+  }
+
+  .mode-btn__label {
+    z-index: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .mode-btn--classic:hover {
+    background: linear-gradient(135deg, rgba(94, 114, 235, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%);
+  }
+
+  .mode-btn--economic:hover {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+  }
+
+  /* Mode popup transitions */
+  #modePopup:not([hidden]) {
+    animation: fadeIn 0.25s ease;
+  }
+
+  #modePopup:not([hidden]) .mode-popup__card {
+    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
   /* Responsive */
   @media (max-width: 860px) {
     .menu-screen { padding: 16px 18px; gap: 16px; }
