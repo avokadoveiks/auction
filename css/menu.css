@@ -250,7 +250,14 @@ body::-webkit-scrollbar {
 
   /* Left panel */
   .left-panel { display: flex; flex-direction: column; gap: 10px; align-items: stretch; justify-content: flex-start; padding-left: 0; }
-  .left-panel__actions { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: clamp(50px, 12vw, 70px); }
+  .left-panel__actions { 
+    display: flex; 
+    flex-wrap: wrap; /* Автоматический перенос на новую строку */
+    gap: 6px; 
+    width: 100%; 
+    max-width: 100%; /* Убираем ограничение */
+    justify-content: flex-start;
+  }
   
   .btn--panel { 
     justify-content: center; 
@@ -260,6 +267,8 @@ body::-webkit-scrollbar {
     gap: 3px;
     min-height: 56px;
     align-items: center;
+    flex: 0 0 auto;
+    min-width: 50px;
   }
   
   .btn--panel .btn-icon {
@@ -341,12 +350,15 @@ body::-webkit-scrollbar {
   .menu-bottom::after { display: none; }
   .menu-bottom__nav { 
     display: flex; 
+    flex-wrap: wrap; /* Автоматический перенос кнопок */
     gap: 4px; 
     justify-content: flex-start;
+    align-items: center;
     margin-left: 20px;
     margin-bottom: 0;
   }
   .nav-button { 
+    flex: 0 0 auto; /* Не растягивать, не сжимать */
     width: 44px; 
     height: 42px; 
     padding: 3px 4px; 
@@ -1175,6 +1187,62 @@ body::-webkit-scrollbar {
   /* ========================================
      АДАПТИВНОСТЬ ДЛЯ ВСЕХ УСТРОЙСТВ
      ======================================== */
+
+  /* Mobile portrait: 2 кнопки в ряд для панели, навигация по 2-3 */
+  @media (max-width: 600px) {
+    .btn--panel {
+      flex: 0 0 calc(50% - 3px);
+      max-width: calc(50% - 3px);
+    }
+    
+    .nav-button {
+      flex: 0 0 auto;
+      min-width: 44px;
+    }
+  }
+
+  /* iPhone 15 Portrait (393x852) */
+  @media (max-width: 430px) and (orientation: portrait) {
+    .btn--panel {
+      flex: 0 0 calc(50% - 3px);
+      min-height: 60px;
+    }
+    
+    .menu-bottom__nav {
+      padding: 8px 12px;
+      gap: 6px;
+    }
+    
+    .nav-button {
+      min-width: 48px;
+      padding: 8px;
+    }
+  }
+
+  /* iPhone 15 Landscape (852x393) */
+  @media (max-width: 932px) and (orientation: landscape) and (max-height: 430px) {
+    .left-panel__actions {
+      gap: 4px;
+    }
+    
+    .btn--panel {
+      flex: 0 0 calc(25% - 3px);
+      min-height: 50px;
+      padding: 4px 2px;
+    }
+    
+    .menu-bottom__nav {
+      gap: 6px;
+    }
+  }
+
+  /* Tablet & Mobile landscape: 3-4 кнопки */
+  @media (min-width: 601px) and (max-width: 1199px) {
+    .btn--panel {
+      flex: 0 0 calc(33.333% - 4px);
+      max-width: calc(33.333% - 4px);
+    }
+  }
 
   /* Desktop: большие экраны (от 1200px) */
   @media (min-width: 1200px) {
