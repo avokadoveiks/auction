@@ -1172,7 +1172,332 @@ body::-webkit-scrollbar {
     }
   }
 
-  /* Responsive */
+  /* ========================================
+     АДАПТИВНОСТЬ ДЛЯ ВСЕХ УСТРОЙСТВ
+     ======================================== */
+
+  /* Desktop: большие экраны (от 1200px) */
+  @media (min-width: 1200px) {
+    .menu-screen {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .menu-content {
+      grid-template-columns: minmax(80px, 100px) 1fr;
+      gap: 24px;
+    }
+    
+    .nav-button {
+      padding: 12px 16px;
+    }
+    
+    .nav-button__label {
+      font-size: 12px;
+    }
+  }
+
+  /* Tablet landscape: планшет горизонтально (768px - 1199px) */
+  @media (min-width: 768px) and (max-width: 1199px) {
+    .menu-screen {
+      padding: 20px 24px;
+    }
+    
+    .menu-content {
+      grid-template-columns: minmax(70px, 85px) 1fr;
+      gap: 18px;
+    }
+    
+    .nav-button {
+      padding: 10px 14px;
+    }
+  }
+
+  /* Tablet portrait: планшет вертикально (600px - 767px) */
+  @media (min-width: 600px) and (max-width: 767px) and (orientation: portrait) {
+    .menu-screen {
+      padding: 18px 20px;
+    }
+    
+    .menu-header {
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .menu-content {
+      grid-template-columns: minmax(60px, 75px) 1fr;
+      gap: 16px;
+    }
+    
+    .main-content {
+      padding: 18px;
+    }
+    
+    .friends-panel {
+      width: 100%;
+    }
+    
+    .menu-bottom {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    
+    .menu-bottom__nav {
+      flex: 1 1 100%;
+      justify-content: space-around;
+    }
+    
+    .menu-actions {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+  }
+
+  /* Mobile landscape: телефон горизонтально (до 767px) */
+  @media (max-width: 767px) and (orientation: landscape) {
+    .menu-screen {
+      padding: 10px 12px;
+      gap: 10px;
+    }
+    
+    .menu-header {
+      flex-direction: row;
+      flex-wrap: nowrap;
+    }
+    
+    .menu-header__meta {
+      gap: 8px;
+    }
+    
+    .resource-chip {
+      padding: 6px 10px;
+      font-size: 11px;
+    }
+    
+    .menu-content {
+      grid-template-columns: minmax(50px, 60px) 1fr;
+      gap: 12px;
+    }
+    
+    .main-content {
+      padding: 12px;
+    }
+    
+    .btn--panel {
+      min-height: 45px;
+      padding: 4px 2px;
+    }
+    
+    .btn--panel .btn-icon {
+      font-size: clamp(12px, 3vw, 16px);
+    }
+    
+    .btn--panel .btn-label {
+      font-size: clamp(6px, 1.2vw, 8px);
+    }
+    
+    .menu-bottom {
+      flex-direction: row;
+      gap: 8px;
+      padding: 8px 12px;
+    }
+    
+    .nav-button {
+      padding: 6px 8px;
+      font-size: 10px;
+    }
+    
+    .nav-button__icon {
+      font-size: 16px;
+    }
+    
+    .nav-button__label {
+      font-size: 9px;
+    }
+  }
+
+  /* Mobile portrait: телефон вертикально (до 599px) */
+  @media (max-width: 599px) and (orientation: portrait) {
+    .menu-screen {
+      padding: 12px 14px;
+      gap: 12px;
+    }
+    
+    .menu-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+    
+    .menu-header__meta {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .resource-chip {
+      flex: 1 1 calc(50% - 4px);
+      min-width: 90px;
+      padding: 8px 10px;
+    }
+    
+    .menu-content {
+      grid-template-columns: minmax(50px, 65px) 1fr;
+      gap: 12px;
+    }
+    
+    .left-panel {
+      gap: 6px;
+    }
+    
+    .btn--panel {
+      min-height: 50px;
+      padding: 5px 3px;
+    }
+    
+    .btn--panel .btn-icon {
+      font-size: clamp(14px, 3.5vw, 18px);
+    }
+    
+    .btn--panel .btn-label {
+      font-size: clamp(6px, 1.4vw, 9px);
+    }
+    
+    .main-content {
+      padding: 14px;
+    }
+    
+    .friends-panel {
+      width: 100%;
+      flex-direction: row;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    
+    .menu-bottom {
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+    
+    .menu-bottom__nav {
+      width: 100%;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .nav-button {
+      flex: 1 1 calc(33.333% - 6px);
+      min-width: 70px;
+      padding: 8px 6px;
+    }
+    
+    .nav-button__icon {
+      font-size: 18px;
+    }
+    
+    .nav-button__label {
+      font-size: 10px;
+    }
+    
+    .menu-actions {
+      width: 100%;
+      justify-content: center;
+      gap: 12px;
+    }
+    
+    .cta {
+      flex: 1 1 auto;
+      max-width: 180px;
+    }
+  }
+
+  /* Extra small phones: очень маленькие телефоны (до 360px) */
+  @media (max-width: 360px) {
+    .menu-screen {
+      padding: 10px 12px;
+      gap: 10px;
+    }
+    
+    .resource-chip {
+      padding: 6px 8px;
+      font-size: 10px;
+    }
+    
+    .btn--panel {
+      min-height: 45px;
+      padding: 4px 2px;
+    }
+    
+    .btn--panel .btn-icon {
+      font-size: clamp(12px, 4vw, 16px);
+    }
+    
+    .btn--panel .btn-label {
+      font-size: clamp(6px, 1.5vw, 8px);
+    }
+    
+    .nav-button {
+      flex: 1 1 calc(50% - 4px);
+      padding: 7px 4px;
+    }
+    
+    .nav-button__label {
+      font-size: 9px;
+    }
+    
+    .menu-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .cta {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+
+  /* Mode popup адаптивность */
+  @media (max-width: 599px) {
+    #modePopup .mode-popup__card {
+      width: calc(100vw - 32px);
+      max-width: 100%;
+    }
+    
+    .mode-popup__body {
+      padding: 18px 16px;
+      gap: 14px;
+    }
+    
+    .mode-btn {
+      padding: 16px 18px;
+      font-size: 16px;
+    }
+    
+    .mode-btn__icon {
+      font-size: 24px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .mode-popup__body {
+      padding: 14px 12px;
+      gap: 12px;
+    }
+    
+    .mode-btn {
+      padding: 14px 16px;
+      font-size: 15px;
+      gap: 10px;
+    }
+    
+    .mode-btn__icon {
+      font-size: 22px;
+    }
+  }
+
+  /* OLD RESPONSIVE (оставляем для совместимости) */
   @media (max-width: 860px) {
     .menu-screen { padding: 16px 18px; gap: 16px; }
     .menu-header { flex-direction: column; align-items: stretch; }
